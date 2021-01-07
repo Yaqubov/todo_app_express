@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style/main.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+</head>
+
+<body>
+    <div class="form-container">
+        <form action="/add" method='POST'>
+            <div class="input-side">
+                <input type="hidden" name="userid" value="{{userID}}">
+                <label for="name">Enter your todo:</label>
+                <input type="text" name="name">
+            </div>
+            <input type="submit" value="Add To Do">
+        </form>
+    </div>
+    {{#each todos as |todo|}}
+    {{> todoTemplate parameter=todo}}
+    {{/each}}
+    <br><br>
+    <a class="button" href="/logout">Log out</a>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+label {
+    color: #2D7D98;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    display: block;
+    font-size: 2em;
+}
+
+input[type=text] {
+    border: 1px -solid #707070;
+    width: 70%;
+    padding: 1em;
+    border-radius: .5em;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    background-color: #F89104;
+    border: none;
+    width: 30%;
+    height: 2.5em;
+    color: white;
+    font-weight: bold;
+    border-radius: 0.5em;
+    font-size: 1.3em;
+    cursor: pointer;
+    margin-left: 1em;
+    margin-top: 1em;
+    text-align: center;
+}
+
+/* form {
+    display: flex;
+} */
+
+.input-side {
+    width: 70%;
+    margin-left: 1em;
+}

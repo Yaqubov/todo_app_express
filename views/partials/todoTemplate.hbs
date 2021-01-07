@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <style>
+        .container {
+            display: flex;
+            width: 70%;
+            margin-left: 1em;
+        }
+
+        .button {
+            display: block;
+            width: 10%;
+            height: fit-content;
+            background: #4E9CAF;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+            text-decoration: none;
+            align-self: center;
+            margin-left: 1em;
+        }
+
+        #done {
+            width: 2%;
+            font-size: 30px;
+        }
+
+        #name {
+            width: 50%;
+            font-size: 25px;
+            margin-left: 1em;
+        }
+
+        #date {
+            width: 20%;
+            text-align: end;
+            padding-right: 1em;
+            text-align: center;
+            align-self: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p id="name">{{ parameter.name}}</p>
+        <p id="date">{{ parameter.date}}</p>
+        <a class="button" href="/edit/{{parameter.id}}">EDIT</a>
+        <a class="button" href="/delete/{{parameter.id}}">DELETE</a>
+    </div>
+</body>
+<script>
+    function isDone() {
+        console.log("parameter.isdone");
+    }
+</script>
+
+</html>

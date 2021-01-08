@@ -30,7 +30,7 @@ CREATE TABLE `todos` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   CONSTRAINT `todos_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,6 @@ CREATE TABLE `todos` (
 
 LOCK TABLES `todos` WRITE;
 /*!40000 ALTER TABLE `todos` DISABLE KEYS */;
-INSERT INTO `todos` VALUES (6,'To Do of Admin','Thu, Jan 07 2021 22:30:33',1);
 /*!40000 ALTER TABLE `todos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-07 22:34:31
+-- Dump completed on 2021-01-09  0:19:45

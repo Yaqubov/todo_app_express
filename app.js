@@ -4,7 +4,11 @@ const cookieParser = require('cookie-parser')
 const hbs = require('hbs')
 const mysql = require('mysql')
 const date = require('date-and-time');
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+
+const ACCESS_TOKEN_SECRET = 'pr!v@te_key'
 
 const app = express()
 
@@ -23,43 +27,46 @@ const db = mysql.createConnection({
     database: 'todo_app'
 })
 
-app.get('/',(req,res) => {
-    const userdata = req.cookies.userData
-    console.log(userdata)
-    if(userdata){
-        db.query("SELECT * FROM users WHERE username='"+userdata.username+"' AND password='"+userdata.password+"'",(err,result) => {
-            if (err) throw err;
-            if (!result.length) {
-                res.send('Cookie data is wrong. Login again!')
-            }else{
-                db.query("SELECT * FROM todos WHERE userId='"+result[0].id+"'",(err,reslt)=>{
-                    if (err) throw err;
-                    res.render('main',{userID:result[0].id, todos:reslt})
-                })
-                    
-            }
-        })
-    }
-    else{
+const authenticateToken = (req, res, next) => {
+    const token = req.cookies.token
+    if (token){
+        jwt.verify(token, ACCESS_TOKEN_SECRET, (err,user) => {
+            if (err) return res.sendStatus(403)
+            req.user = user
+            next()
+        })    
+    }else{
         res.render('login')
     }
+}
+
+app.get('/',authenticateToken, (req,res) => {
+    const user = req.user
+    db.query("SELECT * FROM todos WHERE userId='"+user.id+"'",(err,result)=>{
+        if (err) throw err;
+        res.render('main',{ userID:user.id, todos:result })
+    })               
 })
 
 app.post('/',(req,res) => {
     const username = req.body.username
     const password = req.body.password
-    db.query("SELECT * FROM users WHERE username='"+username+"' AND password='"+password+"'",(err,result) => {
+    db.query("SELECT * FROM users WHERE username='"+username+"'",(err,result) => {
         if (err) throw err;
         if (!result.length) {
-            res.send('Wrong username or password')
+            res.send('User Not Found')
         }else{
-            const user = {'username':result[0].username,'password':result[0].password}
-            res.cookie('userData',user ,{maxAge: 360000})
-            db.query("SELECT * FROM todos WHERE userId='"+result[0].id+"'",(err,reslt)=>{
-                if (err) throw err;
-                res.render('main',{userID:result[0].id, todos:reslt})
-            })
-            
+            if (bcrypt.compareSync(password,result[0].password)){
+                const user = { 'id':result[0].id, 'username':result[0].username, 'password':result[0].password }
+                const token = jwt.sign(user, ACCESS_TOKEN_SECRET)
+                res.cookie('token', token)
+                db.query("SELECT * FROM todos WHERE userId='"+user.id+"'",(err,result)=>{
+                    if (err) throw err;
+                    res.render('main',{ userID:user.id, todos:result })
+                })
+            }else{
+                res.send('Wrong Password')
+            }   
         }
     })
 })
@@ -71,49 +78,62 @@ app.get('/register',(req,res)=>{
 app.post('/register',(req,res)=>{
     const username = req.body.username
     const password = req.body.password
-    db.query("INSERT INTO users(username,password) VALUES ('"+username+"','"+password+"')",(err,result)=>{
+    const password_hash = bcrypt.hashSync(password, 10)
+    db.query("INSERT INTO users(username,password) VALUES ('"+username+"','"+password_hash+"')",(err,result)=>{
         if(err) throw err;
         res.render('result',{message: 'You succesfully registered!'})
     })
 })
 
-app.post('/add',(req,res)=> {
+app.post('/add', authenticateToken, (req,res)=> {
+    const user = req.user
     const now = new Date();
     const pattern = date.compile('ddd, MMM DD YYYY HH:mm:ss');
     const todoname = req.body.name
     if (todoname){
-    const sqlquery = "INSERT INTO todos(name,date,userId) VALUES ('"+todoname+"','"+date.format(now,pattern)+"','"+req.body.userid+"')"
+        const sqlquery = "INSERT INTO todos(name,date,userId) VALUES ('"+todoname+"','"+date.format(now,pattern)+"','"+req.body.userid+"')"
         db.query(sqlquery, (err,result)=> {
             if (err) throw err;
-            res.render('result',{message: "To Do succesfully added!"})
-            })
+        })
+        db.query("SELECT * FROM todos WHERE userId='"+user.id+"'",(err,result)=>{
+            if (err) throw err;
+            res.render('main',{ userID:user.id, todos:result })
+        })  
     }else{
         res.render('result',{message: "To Do name can not be empty"})
     }
 })
 
-app.get('/edit/:id',(req,res) => {
+app.get('/edit/:id', authenticateToken, (req,res) => {
     res.render('edit', {id: req.params.id})
 })
 
-app.post('/edit/:id',(req,res) => {
+app.post('/edit/:id', authenticateToken, (req,res) => {
+    const user = req.user
     const now = new Date();
     const pattern = date.compile('ddd, MMM DD YYYY HH:mm:ss');
     db.query("UPDATE todos SET name='"+req.body.name+"' , date='"+date.format(now,pattern)+"' WHERE id='"+req.params.id+"'", (err,result) => {
         if (err) throw err;
-        res.render('result',{message: "To Do succesfully updated!"})
     })
+    db.query("SELECT * FROM todos WHERE userId='"+user.id+"'",(err,result)=>{
+        if (err) throw err;
+        res.render('main',{ userID:user.id, todos:result })
+    })  
 })
 
-app.get('/delete/:id',(req,res) => {
+app.get('/delete/:id', authenticateToken, (req,res) => {
+    const user = req.user
     db.query("DELETE FROM todos WHERE id='"+req.params.id+"'",(err,result) => {
         if(err) throw err;
-        res.render('result',{message: "To Do succesfully deleted!"})
     })
+    db.query("SELECT * FROM todos WHERE userId='"+user.id+"'",(err,result)=>{
+        if (err) throw err;
+        res.render('main',{ userID:user.id, todos:result })
+    })  
 })
 
-app.get('/logout',(req,res) => {
-    res.clearCookie('userData'); 
+app.get('/logout', authenticateToken, (req,res) => {
+    res.clearCookie('token'); 
     res.render('login')
 })
 

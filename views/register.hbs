@@ -8,15 +8,24 @@
             left: 50%;
             margin-top: -150px;
             margin-left: -100px;
-            width: 100px;
+            width: 300px;
             height: 100px;
+        }
+
+        .alert {
+            width: 240px;
+            height: fit-content;
+            font-size: 15px;
+            color: red
         }
     </style>
 </head>
 
 <body>
+
     <div class="container">
         <h1>Registration</h1>
+
         <form action="/register" method="POST">
             <label for="username">Username:</label>
             <input type="text" name="username">
@@ -24,7 +33,16 @@
             <label for="password">Password:</label>
             <input type="password" name="password">
             <br><br>
+            {{# if errors }}
+            {{#each errors as |err|}}
+            <div class="alert">
+                <p>{{ err.msg }}</p>
+            </div>
+            {{/each}}
+            {{/if}}
             <input type="submit" value="Register">
+            <br><br>
+            <a href="/">Already have an account?</a>
         </form>
     </div>
 </body>

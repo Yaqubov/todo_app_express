@@ -13,6 +13,11 @@
         <div class="input-side">
             <label for="name">Edit your todo:</label>
             <input type="text" name="name">
+            {{# if error }}
+            <div class="alert">
+                <p>{{ error.msg }}</p>
+            </div>
+            {{/if}}
         </div>
 
         <input type="submit" value="Edit">

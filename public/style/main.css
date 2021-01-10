@@ -66,3 +66,11 @@ form {
 .input-side {
     width: 70%;
 }
+
+.alert {
+    width: 240px;
+    height: fit-content;
+    font-size: 20px;
+    color: red;
+    padding-left: 1em;
+}

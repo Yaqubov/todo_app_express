@@ -11,12 +11,21 @@
             width: 100px;
             height: 100px;
         }
+
+        .alert {
+            width: 240px;
+            height: fit-content;
+            font-size: 15px;
+            color: red
+        }
     </style>
 </head>
 
 <body>
+
     <div class="container">
         <h1>Login</h1>
+
         <form action="/" method="POST">
             <label for="username">Username:</label>
             <input type="text" name="username">
@@ -24,6 +33,13 @@
             <label for="password">Password:</label>
             <input type="password" name="password">
             <br><br>
+            {{# if errors }}
+            {{#each errors as |err|}}
+            <div class="alert">
+                <p>{{ err.msg }}</p>
+            </div>
+            {{/each}}
+            {{/if}}
             <input type="submit" value="Login">
         </form>
         <a href="/register">Registration</a>

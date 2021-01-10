@@ -37,3 +37,11 @@ input[type=submit] {
     width: 70%;
     margin-left: 1em;
 }
+
+.alert {
+    width: 400px;
+    height: fit-content;
+    font-size: 20px;
+    color: red;
+    padding-left: 1em;
+}

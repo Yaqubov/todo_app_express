@@ -28,7 +28,7 @@ CREATE TABLE `users` (
   `password` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (8,'admin','$2b$10$LzYAK8zHs49KCtSGV2HzxewwXQgbSAM2fbNUsJKJkKRa1FFcOvQ52');
+INSERT INTO `users` VALUES (13,'admin','$2b$10$ATvV0hdDITFrRejC5/RQU.jOFC6Ov27abKH8GGOz8wZ/EDH7FXhDW'),(15,'tahir','$2b$10$YBPscmbEFNm4CRcrtY50dO4nQVbOGtwpL/Vw0vavhc8uJWJ50lhqe');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-09  0:19:45
+-- Dump completed on 2021-01-10 21:49:43
